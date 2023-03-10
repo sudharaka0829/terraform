@@ -13,11 +13,15 @@ provider "aws" {
   region  = "us-west-2"
 }
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-830c94e3"
-  instance_type = "t2.micro"
+resource "aws_iam_user" "test" {
+  name = "test"
+  path = "/test/"
+}
 
-  tags = {
-    Name = "ExampleAppServerInstance"
-  }
+resource "aws_iam_access_key" "test" {
+  user = aws_iam_user.test.name
+}
+
+output "aws_iam_smtp_password_v4" {
+  value = nonsensitive(aws_iam_access_key.test.ses_smtp_password_v4)
 }
